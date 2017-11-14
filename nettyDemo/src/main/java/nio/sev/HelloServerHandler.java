@@ -11,6 +11,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 public class HelloServerHandler extends ChannelInboundHandlerAdapter {
 	
 	private final static Logger LOGGER = LoggerFactory.getLogger(HelloServerHandler.class);
+	
+	private final static String HSJ = "hsj";
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -18,7 +20,12 @@ public class HelloServerHandler extends ChannelInboundHandlerAdapter {
 		LOGGER.info("{} Say : {}",ctx.channel().remoteAddress(),msg);
 		// 返回客户端消息 - 我已经接收到了你的消息
 //		ctx.writeAndFlush("Received your message !\n");
-		ctx.fireChannelRead(msg);
+		if(HSJ.equals(((String)msg).trim())){
+			ctx.writeAndFlush(String.format("Received your message i am hander=[%s],input value is [%s]!\n",this.getClass().getName(),msg.toString()));
+		}else{
+			ctx.fireChannelRead(msg);
+		}
+		
 	}
 
 	@Override
