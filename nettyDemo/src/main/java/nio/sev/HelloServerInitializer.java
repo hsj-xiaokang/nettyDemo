@@ -7,9 +7,13 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
 
 public class HelloServerInitializer extends ChannelInitializer<SocketChannel> {
 
+	 //处理耗时的任务，避免io线程EvenLoop阻塞
+    static final EventExecutorGroup group = new DefaultEventExecutorGroup(16);
 
      @Override
      protected void initChannel(SocketChannel ch) throws Exception {
@@ -23,7 +27,8 @@ public class HelloServerInitializer extends ChannelInitializer<SocketChannel> {
          pipeline.addLast("encoder", new StringEncoder());
  
          // 自己的逻辑Handler
-         pipeline.addLast("handler", new HelloServerHandler());
+         pipeline.addLast(group,"handler", new HelloServerHandler());
+         pipeline.addLast(group,"handler_next", new HelloServerHandler_next());
      }
 
 }

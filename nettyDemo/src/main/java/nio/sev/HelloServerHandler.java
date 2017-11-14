@@ -17,7 +17,8 @@ public class HelloServerHandler extends ChannelInboundHandlerAdapter {
 		// 收到消息直接打印输出
 		LOGGER.info("{} Say : {}",ctx.channel().remoteAddress(),msg);
 		// 返回客户端消息 - 我已经接收到了你的消息
-		ctx.writeAndFlush("Received your message !\n");
+//		ctx.writeAndFlush("Received your message !\n");
+		ctx.fireChannelRead(msg);
 	}
 
 	@Override
