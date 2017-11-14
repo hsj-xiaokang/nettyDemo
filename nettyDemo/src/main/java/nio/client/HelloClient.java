@@ -1,16 +1,23 @@
-package nio;
+package nio.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import nio.sev.HelloServerHandler;
 
 public class HelloClient {
+	
+	    private final static Logger LOGGER = LoggerFactory.getLogger(HelloClient.class);
 	    public static String host = "127.0.0.1";
 	    public static int port = 7878;
 	
@@ -24,11 +31,13 @@ public class HelloClient {
 	        try {
 	            Bootstrap b = new Bootstrap();
 	            b.group(group)
+	            //udp .channel(NioDatagramChannel.class);
 	            .channel(NioSocketChannel.class)
 	            .handler(new HelloClientInitializer());
 	
 	            // 连接服务端
 	            Channel ch = b.connect(host, port).sync().channel();
+	            LOGGER.info("client listen into {} port!",port);
 	            
 	            // 控制台输入
 	            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
